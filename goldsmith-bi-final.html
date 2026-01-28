@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goldsmith & Co - Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #B8956F;
+            --gold-dark: #8B7355;
+            --gold-light: #D4BF9D;
+            --charcoal: #1A1A1A;
+            --charcoal-light: #2C2C2C;
+            --sage: #5F7161;
+            --sage-light: #7A9175;
+            --terracotta: #C97C5D;
+            --bg: #FDFCFB;
+            --bg-alt: #F8F6F4;
+            --card: #FFFFFF;
+            --text: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --text-tertiary: #9B9B9B;
+            --border: #E8E3DE;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(184, 149, 111, 0.08) 0%, rgba(139, 115, 85, 0.04) 50%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-light);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(232, 227, 222, 0.6);
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .header.scrolled {
+            padding: 16px 48px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand {
+            font-family: 'Eczar', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--charcoal);
+            letter-spacing: -0.5px;
+            position: relative;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .brand::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brand:hover::after {
+            width: 100%;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 40px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .nav-item {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 0;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.3px;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transform: translateX(-50%);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item:hover {
+            color: var(--gold);
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        .nav-item.active {
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .user-badge {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, rgba(184, 149, 111, 0.1) 0%, rgba(139, 115, 85, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gold-dark);
+            border: 1px solid rgba(184, 149, 111, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeIn 1s ease-out 0.4s both;
+            letter-spacing: 0.3px;
+        }
+
+        .user-badge:hover {
+            background: linear-gradient(135deg, rgba(184, 149, 111, 0.15) 0%, rgba(139, 115, 85, 0.1) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(184, 149, 111, 0.15);
+        }
+
+        .main {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 64px 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header {
+            margin-bottom: 64px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .page-title {
+            font-family: 'Eczar', serif;
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--charcoal);
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .section {
+            margin-bottom: 96px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+
+        .section-title {
+            font-family: 'Eczar', serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--charcoal);
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+            cursor: default;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(184, 149, 111, 0.3);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-family: 'Eczar', serif;
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--charcoal);
+            margin-bottom: 12px;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            letter-spacing: 0.2px;
+        }
+
+        .stat-change.positive {
+            color: var(--sage);
+            background: rgba(95, 113, 97, 0.08);
+        }
+
+        .stat-change.negative {
+            color: var(--terracotta);
+            background: rgba(201, 124, 93, 0.08);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(184, 149, 111, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 36px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-title {
+            font-family: 'Eczar', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--charcoal);
+            letter-spacing: -0.5px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select, input {
+            padding: 12px 20px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--card);
+            color: var(--text);
+            font-family: 'Instrument Sans', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            letter-spacing: 0.2px;
+        }
+
+        select:hover, input:hover {
+            border-color: var(--gold-light);
+            background: var(--bg);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--card);
+            box-shadow: 0 0 0 4px rgba(184, 149, 111, 0.1);
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Instrument Sans', sans-serif;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(184, 149, 111, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(184, 149, 111, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card);
+            border-color: var(--gold-light);
+            transform: translateY(-1px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            background: var(--bg-alt);
+            border: none;
+        }
+
+        th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        td {
+            padding: 20px;
+            font-size: 14px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+            vertical-align: top;
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--border);
+            border-radius: 12px 0 0 12px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--border);
+            border-radius: 0 12px 12px 0;
+        }
+
+        tr:hover td {
+            background: var(--bg-alt);
+            transform: scale(1.01);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .client-table td {
+            max-width: 300px;
+        }
+
+        .candidate-name {
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+
+        .current-firm {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .employment-history {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .client-report {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-height: 120px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .client-report::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .client-report::-webkit-scrollbar-thumb {
+            background: var(--gold-light);
+            border-radius: 2px;
+        }
+
+        .search-name {
+            font-family: 'Eczar', serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--gold-dark);
+            letter-spacing: -0.3px;
+        }
+
+        .linkedin-update {
+            display: flex;
+            align-items: start;
+            gap: 20px;
+            padding: 24px;
+            background: var(--bg-alt);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .linkedin-update::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #0077b5, transparent);
+            transform: scaleY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .linkedin-update:hover {
+            background: var(--card);
+            border-color: rgba(0, 119, 181, 0.2);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .linkedin-update:hover::before {
+            transform: scaleY(1);
+        }
+
+        .linkedin-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #0077b5, #005885);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 119, 181, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .linkedin-update:hover .linkedin-icon {
+            transform: rotate(-5deg) scale(1.1);
+        }
+
+        .linkedin-content {
+            flex: 1;
+        }
+
+        .linkedin-name {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: var(--text);
+            letter-spacing: 0.2px;
+        }
+
+        .linkedin-action {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .linkedin-time {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-container {
+            height: 380px;
+            position: relative;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--bg-alt);
+            border-radius: 16px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 80px 0;
+        }
+
+        .comparison-box {
+            background: linear-gradient(135deg, rgba(184, 149, 111, 0.05) 0%, rgba(139, 115, 85, 0.03) 100%);
+            border: 2px solid rgba(184, 149, 111, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            margin-top: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comparison-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .comparison-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--gold-dark);
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+        }
+
+        .comparison-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(184, 149, 111, 0.1);
+        }
+
+        .comparison-stat:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-stat strong {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--gold-dark);
+        }
+
+        .card, .stat-card {
+            animation: scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.05s; }
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.15s; }
+        .stat-card:nth-child(4) { animation-delay: 0.2s; }
+    </style>
+</head>
+<body>
+    <header class="header" id="mainHeader">
+        <div class="brand">Goldsmith & Co</div>
+        <nav class="header-nav">
+            <a href="#clients" class="nav-item active">Client Pipeline</a>
+            <a href="#overview" class="nav-item">Overview</a>
+            <a href="#personnel" class="nav-item">Personnel</a>
+            <a href="#elevation" class="nav-item">Elevation</a>
+            <a href="#linkedin" class="nav-item">Activity</a>
+        </nav>
+        <div class="user-badge">Joe Goldsmith</div>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">Analytics Dashboard</h1>
+            <p class="page-subtitle">Last updated: January 28, 2026 at 3:42 PM EST</p>
+        </div>
+
+        <!-- Client Pipeline Section -->
+        <section id="clients" class="section">
+            <h2 class="section-title">Client Pipeline</h2>
+            <p class="section-subtitle">Active searches and candidate progression by recruiter</p>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Active Searches</h3>
+                        <p class="card-subtitle">Filter by recruiter to view their client portfolio</p>
+                    </div>
+                    <div class="filter-group">
+                        <select id="clientFilter">
+                            <option value="joe">Joe</option>
+                            <option value="cliff">Cliff</option>
+                            <option value="audrey">Audrey</option>
+                            <option value="will">Will</option>
+                            <option value="marc">Marc</option>
+                            <option value="theo">Theo</option>
+                            <option value="emily">Emily</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="client-table">
+                        <thead>
+                            <tr>
+                                <th>Search</th>
+                                <th>Candidate</th>
+                                <th>Current Firm</th>
+                                <th>Employment History</th>
+                                <th>Client Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Active Candidates</div>
+                    <div class="stat-value">847</div>
+                    <div class="stat-change positive">↑ 12.4% vs last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Open Searches</div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-change negative">↓ 3 from last week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Placements (Q4)</div>
+                    <div class="stat-value">67</div>
+                    <div class="stat-change positive">↑ 18.2% YoY</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg. Time to Fill</div>
+                    <div class="stat-value">47d</div>
+                    <div class="stat-change positive">↓ 5 days vs Q3</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Personnel Analytics Section -->
+        <section id="personnel" class="section">
+            <h2 class="section-title">Personnel Analytics</h2>
+            <p class="section-subtitle">Individual recruiter performance metrics and activity tracking</p>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Recruiter Performance</h3>
+                        <p class="card-subtitle">Select a recruiter to view individual metrics</p>
+                    </div>
+                    <div class="filter-group">
+                        <select id="recruiterSelect">
+                            <option value="joe">Joe</option>
+                            <option value="cliff">Cliff</option>
+                            <option value="audrey">Audrey</option>
+                            <option value="will">Will</option>
+                            <option value="marc">Marc</option>
+                            <option value="theo">Theo</option>
+                            <option value="emily">Emily</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <div class="chart-container">
+                            <canvas id="recruiterChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th style="text-align: right;">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="metricsTable">
+                                <tr>
+                                    <td>Name Generation</td>
+                                    <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">2</td>
+                                </tr>
+                                <tr>
+                                    <td>Outreach</td>
+                                    <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">4</td>
+                                </tr>
+                                <tr>
+                                    <td>Candidate Management</td>
+                                    <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">11</td>
+                                </tr>
+                                <tr>
+                                    <td>Close</td>
+                                    <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">14</td>
+                                </tr>
+                                <tr>
+                                    <td>Client Origination</td>
+                                    <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">25</td>
+                                </tr>
+                                <tr>
+                                    <td>Client Management</td>
+                                    <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">21</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Elevation Trends Section -->
+        <section id="elevation" class="section">
+            <h2 class="section-title">Elevation Trends</h2>
+            <p class="section-subtitle">Junior talent recruiting analytics (Analyst & Associate level placements)</p>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Overall Performance Metrics</h3>
+                        <p class="card-subtitle">Aggregate trends across all junior-level searches</p>
+                    </div>
+                    <div class="filter-group">
+                        <label>Highlight:</label>
+                        <select id="elevationSelect">
+                            <option value="all">All Recruiters</option>
+                            <option value="joe">Joe</option>
+                            <option value="cliff">Cliff</option>
+                            <option value="audrey">Audrey</option>
+                            <option value="will">Will</option>
+                            <option value="marc">Marc</option>
+                            <option value="theo">Theo</option>
+                            <option value="emily">Emily</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <h4 style="font-family: 'Eczar', serif; font-size: 20px; font-weight: 600; margin-bottom: 20px; color: var(--charcoal);">Success Rate by Sourcing Channel</h4>
+                        <div class="chart-container">
+                            <canvas id="sourcingChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Eczar', serif; font-size: 20px; font-weight: 600; margin-bottom: 20px; color: var(--charcoal);">Time to Placement (Days)</h4>
+                        <div class="chart-container">
+                            <canvas id="timeToPlacementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h4 style="font-family: 'Eczar', serif; font-size: 20px; font-weight: 600; margin-bottom: 20px; color: var(--charcoal);">Top Universities by Placement Success</h4>
+                    <div class="chart-container" style="height: 320px;">
+                        <canvas id="universityChart"></canvas>
+                    </div>
+                </div>
+
+                <div id="recruiterComparison" class="comparison-box" style="display: none;">
+                    <div class="comparison-title">Your Performance vs Team Average</div>
+                    <div id="comparisonContent"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- LinkedIn Updates Section -->
+        <section id="linkedin" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">Recent LinkedIn Activity</h2>
+                        <p class="card-subtitle">Candidates with recent profile changes flagged for review</p>
+                    </div>
+                    <div class="filter-group">
+                        <select id="linkedinFilter">
+                            <option value="all">All Recruiters</option>
+                            <option value="joe">Joe's Candidates</option>
+                            <option value="cliff">Cliff's Candidates</option>
+                            <option value="audrey">Audrey's Candidates</option>
+                            <option value="will">Will's Candidates</option>
+                            <option value="marc">Marc's Candidates</option>
+                            <option value="theo">Theo's Candidates</option>
+                            <option value="emily">Emily's Candidates</option>
+                        </select>
+                        <button class="btn btn-secondary">Refresh</button>
+                    </div>
+                </div>
+
+                <div id="linkedinUpdates"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('mainHeader');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Client data by recruiter
+        const clientData = {
+            joe: [
+                {
+                    search: 'ICONIQ Capital Investment Specialist',
+                    name: 'Preeyam Gandhi',
+                    firm: 'PIMCO',
+                    history: 'PIMCO (14 - Present)',
+                    activity: 'Candidate Added; G&Co call on 4/23; Candidate Added For Introduction To Client; In-person meeting with Ben Elbaz on 7/1 at 2:30 pm ET; VC with Mike Anders on 9/5 at 11 am ET; In-Person with Cam Leax on 10/2 at 2:30 pm ET'
+                },
+                {
+                    search: 'Allen & Co - Senior T&E Associate',
+                    name: 'Carrie Galloway',
+                    firm: 'J.P. Morgan Private Bank',
+                    history: 'J.P. Morgan Private Bank (18 - Present) | Willkie Farr & Gallagher LLP (13 - 18) | Cravath, Swaine & Moore LLP (08 - 11)',
+                    activity: 'Sent Email/In Mail; G&Co call on 12/2; Interested; scheduling call with G&Co; Candidate Added For Introduction To Client; 1/23 9:30am ET VC w/ Ashok Chachra'
+                },
+                {
+                    search: 'ICONIQ Chief Marketing Officer',
+                    name: 'Jenifer Berman',
+                    firm: 'Goldman Sachs',
+                    history: 'Goldman Sachs (21 - Present) | Business Insider (17 - 21) | Vanity Fair (15 - 17) | National Geographic Society (10 - 15)',
+                    activity: 'Candidate Added; G&Co call on 11/6; in person with Lou Thorne 11/20 at 12pm ET; 12/8 at 11am ET with Mike Anders via zoom; 1/15 12:30pm ET VC w/ Sneha Rana; in person 1/9 w/ Cam Leax & Ben Elbaz starting at 9am ET'
+                }
+            ],
+            cliff: [
+                {
+                    search: 'Blackstone Principal - Real Estate',
+                    name: 'Theodore Worthington-Blake',
+                    firm: 'Carlyle Group',
+                    history: 'Carlyle Group (16 - Present) | Morgan Stanley (12 - 16) | Goldman Sachs (08 - 12)',
+                    activity: 'Candidate Added; G&Co call on 10/8; Candidate Added For Introduction To Client; In-person with Jonathan Gray on 11/15 at 3pm ET; Follow-up VC with Steve Schwarzman on 11/22 at 10am ET; Final round 12/5 at 2pm ET'
+                },
+                {
+                    search: 'KKR Head of Infrastructure',
+                    name: 'Arabella Kensington-Hayes',
+                    firm: 'Brookfield Asset Management',
+                    history: 'Brookfield Asset Management (18 - Present) | Macquarie Group (14 - 18) | JPMorgan (10 - 14)',
+                    activity: 'Sent Email/In Mail; G&Co call on 11/19; Interested; Candidate Added For Introduction To Client; VC with Pete Stavros 12/8 at 11am ET; In-person with Joe Bae 12/15 at 9am ET'
+                },
+                {
+                    search: 'Apollo Global CFO',
+                    name: 'Montgomery Ashford-Clarke',
+                    firm: 'Ares Management',
+                    history: 'Ares Management (19 - Present) | Blackstone (15 - 19) | Credit Suisse (11 - 15) | Harvard MBA (09 - 11)',
+                    activity: 'Candidate Added; G&Co call on 9/25; Introduced To Client; Multiple rounds with Marc Rowan; In-person final round 1/12 at 10am ET; Offer stage discussions ongoing'
+                }
+            ],
+            audrey: [
+                {
+                    search: 'Vista Equity Operating Partner',
+                    name: 'Penelope Harrington-Windsor',
+                    firm: 'Thoma Bravo',
+                    history: 'Thoma Bravo (17 - Present) | Silver Lake (13 - 17) | Bain & Company (09 - 13) | Stanford MBA (07 - 09)',
+                    activity: 'Candidate Added; Interested; G&Co call on 10/22; Candidate Added For Introduction To Client; VC with Robert Smith 11/8 at 2pm ET; In-person 11/20 at 1pm ET; Second round scheduled 12/10'
+                },
+                {
+                    search: 'TPG Technology Investor',
+                    name: 'Sebastian Livingston III',
+                    firm: 'General Atlantic',
+                    history: 'General Atlantic (15 - Present) | Warburg Pincus (11 - 15) | McKinsey & Company (07 - 11)',
+                    activity: 'G&Co call on 11/3; Candidate Added For Introduction To Client; VC with TPG team 11/28 at 3pm ET; Case study presentation 12/12; Final round with Jon Winkelried pending'
+                }
+            ],
+            will: [
+                {
+                    search: 'Sequoia Capital Partner',
+                    name: 'Cordelia Beaumont-Hayes',
+                    firm: 'Andreessen Horowitz',
+                    history: 'Andreessen Horowitz (18 - Present) | Accel Partners (14 - 18) | Google (10 - 14) | Stanford MS (08 - 10)',
+                    activity: 'Candidate Added; G&Co call on 12/1; Interested; Candidate Added For Introduction To Client; Partner dinner 12/18 at 6pm PT; Follow-up meetings scheduled for early January'
+                },
+                {
+                    search: 'Benchmark General Partner',
+                    name: 'Maximilian von Habsburg-Scott',
+                    firm: 'Greylock Partners',
+                    history: 'Greylock Partners (16 - Present) | First Round Capital (12 - 16) | LinkedIn (08 - 12)',
+                    activity: 'Sent Email/In Mail; G&Co call on 11/15; Evaluating opportunity; Candidate Added For Introduction To Client; Initial VC with Peter Fenton 12/5 at 10am PT; Additional partner meetings ongoing'
+                }
+            ],
+            marc: [
+                {
+                    search: 'Elliott Management Portfolio Manager',
+                    name: 'Octavia Pemberton-Smith',
+                    firm: 'Citadel',
+                    history: 'Citadel (19 - Present) | Bridgewater Associates (15 - 19) | Goldman Sachs (11 - 15) | Wharton MBA (09 - 11)',
+                    activity: 'Candidate Added; G&Co call on 10/30; Candidate Added For Introduction To Client; In-person with Paul Singer 11/25 at 2pm ET; Follow-up discussions ongoing; Comp negotiations in progress'
+                },
+                {
+                    search: 'Point72 Sector Head - Healthcare',
+                    name: 'Reginald Fairfax-Wellington',
+                    firm: 'Millennium Management',
+                    history: 'Millennium Management (17 - Present) | Two Sigma (13 - 17) | Morgan Stanley (09 - 13)',
+                    activity: 'G&Co call on 12/7; Interested; Candidate Added For Introduction To Client; VC with Steve Cohen 1/9 at 11am ET; Case study assigned; Second round scheduled 1/23'
+                }
+            ],
+            theo: [
+                {
+                    search: 'Founders Fund Principal',
+                    name: 'Henrietta Worthington-Blake',
+                    firm: 'Tiger Global Management',
+                    history: 'Tiger Global Management (16 - Present) | Insight Partners (12 - 16) | Facebook (08 - 12)',
+                    activity: 'Candidate Added; G&Co call on 11/18; Candidate Added For Introduction To Client; Partner meeting with Peter Thiel 12/10 at 3pm PT; Additional diligence calls scheduled; Offer decision expected mid-January'
+                },
+                {
+                    search: 'Index Ventures Partner - Enterprise',
+                    name: 'Beauregard Ashton IV',
+                    firm: 'Lightspeed Venture Partners',
+                    history: 'Lightspeed Venture Partners (15 - Present) | Accel (11 - 15) | Salesforce (07 - 11)',
+                    activity: 'Sent Email/In Mail; G&Co call on 12/3; Interested; Candidate Added For Introduction To Client; VC with Mike Volpi 1/7 at 10am PT; Portfolio company references being checked'
+                }
+            ],
+            emily: [
+                {
+                    search: 'Fifth Wall Operating Partner',
+                    name: 'Clementine von Rothschild',
+                    firm: 'Brookfield Ventures',
+                    history: 'Brookfield Ventures (18 - Present) | JLL (14 - 18) | CBRE (10 - 14)',
+                    activity: 'Candidate Added; Considering opportunity; G&Co call on 11/29; Candidate Added For Introduction To Client; In-person with Brendan Wallace 12/16 at 2pm PT; Second round with full partnership scheduled 1/14'
+                },
+                {
+                    search: 'Lerer Hippeau Venture Partner',
+                    name: 'Fitzwilliam Kensington-Grey',
+                    firm: 'Union Square Ventures',
+                    history: 'Union Square Ventures (17 - Present) | First Round Capital (13 - 17) | Twitter (09 - 13)',
+                    activity: 'G&Co call on 12/12; Interested; Candidate Added For Introduction To Client; VC with Ben Lerer 1/8 at 11am ET; Additional partner meetings in progress; Portfolio fit discussions ongoing'
+                }
+            ]
+        };
+
+        // Recruiter data
+        const recruiterData = {
+            joe: { nameGen: 2, outreach: 4, candidateMgmt: 11, close: 14, clientOrig: 25, clientMgmt: 21 },
+            cliff: { nameGen: 5, outreach: 5, candidateMgmt: 25, close: 26, clientOrig: 34, clientMgmt: 30 },
+            audrey: { nameGen: 7, outreach: 8, candidateMgmt: 7, close: 5, clientOrig: 0, clientMgmt: 5 },
+            will: { nameGen: 4, outreach: 12, candidateMgmt: 9, close: 2, clientOrig: 0, clientMgmt: 4 },
+            marc: { nameGen: 11, outreach: 2, candidateMgmt: 3, close: 0, clientOrig: 0, clientMgmt: 1 },
+            theo: { nameGen: 3, outreach: 7, candidateMgmt: 4, close: 3, clientOrig: 0, clientMgmt: 2 },
+            emily: { nameGen: 3, outreach: 2, candidateMgmt: 1, close: 1, clientOrig: 0, clientMgmt: 1 }
+        };
+
+        // Elevation data
+        const elevationData = {
+            all: { 
+                linkedin: 42, campus: 35, referral: 28, jobBoards: 18, other: 12,
+                avgDays: 52,
+                universities: { Wharton: 18, Harvard: 16, Stanford: 14, MIT: 12, Columbia: 10, NYU: 9, Chicago: 8, Northwestern: 7 }
+            },
+            joe: { linkedin: 8, campus: 5, referral: 6, jobBoards: 2, other: 1, avgDays: 48, universities: { Wharton: 4, Harvard: 3, Stanford: 2, MIT: 2, Columbia: 1, NYU: 2, Chicago: 1, Northwestern: 1 } },
+            cliff: { linkedin: 12, campus: 8, referral: 7, jobBoards: 4, other: 3, avgDays: 45, universities: { Wharton: 5, Harvard: 4, Stanford: 3, MIT: 3, Columbia: 2, NYU: 2, Chicago: 2, Northwestern: 2 } },
+            audrey: { linkedin: 6, campus: 7, referral: 4, jobBoards: 3, other: 2, avgDays: 55, universities: { Wharton: 3, Harvard: 2, Stanford: 3, MIT: 2, Columbia: 2, NYU: 1, Chicago: 1, Northwestern: 1 } },
+            will: { linkedin: 5, campus: 4, referral: 3, jobBoards: 2, other: 1, avgDays: 58, universities: { Wharton: 2, Harvard: 2, Stanford: 2, MIT: 1, Columbia: 1, NYU: 1, Chicago: 1, Northwestern: 1 } },
+            marc: { linkedin: 4, campus: 3, referral: 2, jobBoards: 2, other: 1, avgDays: 51, universities: { Wharton: 1, Harvard: 2, Stanford: 1, MIT: 1, Columbia: 1, NYU: 1, Chicago: 0, Northwestern: 1 } },
+            theo: { linkedin: 4, campus: 4, referral: 3, jobBoards: 3, other: 2, avgDays: 49, universities: { Wharton: 2, Harvard: 2, Stanford: 2, MIT: 2, Columbia: 2, NYU: 1, Chicago: 2, Northwestern: 1 } },
+            emily: { linkedin: 3, campus: 4, referral: 3, jobBoards: 2, other: 2, avgDays: 56, universities: { Wharton: 1, Harvard: 1, Stanford: 1, MIT: 1, Columbia: 1, NYU: 1, Chicago: 1, Northwestern: 0 } }
+        };
+
+        // LinkedIn updates
+        const linkedinUpdates = [
+            { recruiter: 'joe', name: 'Bartholomew Q. Fitzwilliam III', action: 'Updated title: Analyst → Senior Analyst at Goldman Sachs', time: '2 hours ago' },
+            { recruiter: 'cliff', name: 'Penelope Worthington-Smythe', action: 'Added new position: Associate at McKinsey & Company', time: '5 hours ago' },
+            { recruiter: 'joe', name: 'Maximillian von Rothschild Jr.', action: 'Updated education: Added MBA from Wharton', time: 'Yesterday at 2:34 PM' },
+            { recruiter: 'audrey', name: 'Arabella Kensington-Vanderbilt', action: 'Changed location: Boston, MA → New York, NY', time: 'Yesterday at 9:15 AM' },
+            { recruiter: 'will', name: 'Montgomery Beauregard Ashton IV', action: 'Updated experience: Promoted to Associate at Blackstone', time: '2 days ago' },
+            { recruiter: 'cliff', name: 'Cordelia Pemberton-Hayes', action: 'Added certification: CFA Level II Candidate', time: '2 days ago' },
+            { recruiter: 'theo', name: 'Sebastian Worthington III', action: 'Updated skills: Added "Financial Modeling" and "Valuation"', time: '3 days ago' },
+            { recruiter: 'emily', name: 'Octavia Harrington-Windsor', action: 'New connection: Now connected with hiring manager at Apollo', time: '3 days ago' }
+        ];
+
+        Chart.defaults.color = '#6B6B6B';
+        Chart.defaults.font.family = "'Instrument Sans', sans-serif";
+        Chart.defaults.font.size = 13;
+
+        let recruiterChart, sourcingChart, timeToPlacementChart, universityChart;
+
+        // Update client table
+        function updateClientTable(recruiter) {
+            const tbody = document.getElementById('clientTableBody');
+            const data = clientData[recruiter];
+            
+            tbody.innerHTML = data.map(client => `
+                <tr>
+                    <td><div class="search-name">${client.search}</div></td>
+                    <td>
+                        <div class="candidate-name">${client.name}</div>
+                        <div class="current-firm">${client.firm}</div>
+                    </td>
+                    <td><div class="current-firm">${client.firm}</div></td>
+                    <td><div class="employment-history">${client.history}</div></td>
+                    <td><div class="client-report">${client.activity}</div></td>
+                </tr>
+            `).join('');
+        }
+
+        function initRecruiterChart() {
+            const ctx = document.getElementById('recruiterChart').getContext('2d');
+            recruiterChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Name Gen', 'Outreach', 'Candidate Mgmt', 'Close', 'Client Origin', 'Client Mgmt'],
+                    datasets: [{
+                        label: 'Activity Count',
+                        data: [2, 4, 11, 14, 25, 21],
+                        backgroundColor: 'rgba(184, 149, 111, 0.9)',
+                        borderWidth: 0,
+                        borderRadius: 8,
+                        hoverBackgroundColor: 'rgba(139, 115, 85, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: {
+                        duration: 1200,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 26, 0.95)',
+                            titleColor: '#B8956F',
+                            bodyColor: '#FFFFFF',
+                            borderColor: '#B8956F',
+                            borderWidth: 1,
+                            padding: 16,
+                            cornerRadius: 8,
+                            titleFont: { size: 14, weight: 700 },
+                            bodyFont: { size: 13, weight: 600 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(232, 227, 222, 0.5)', drawBorder: false },
+                            ticks: { font: { size: 12, weight: 600 } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: 600 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initElevationCharts() {
+            const sourcingCtx = document.getElementById('sourcingChart').getContext('2d');
+            sourcingChart = new Chart(sourcingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['LinkedIn', 'Campus', 'Referrals', 'Job Boards', 'Other'],
+                    datasets: [{
+                        label: 'Placements',
+                        data: [42, 35, 28, 18, 12],
+                        backgroundColor: 'rgba(184, 149, 111, 0.9)',
+                        borderRadius: 8,
+                        hoverBackgroundColor: 'rgba(139, 115, 85, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: 'rgba(232, 227, 222, 0.5)' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const timeCtx = document.getElementById('timeToPlacementChart').getContext('2d');
+            timeToPlacementChart = new Chart(timeCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Avg Days',
+                        data: [58, 55, 52, 48, 50, 47, 49, 51, 52, 48, 45, 52],
+                        borderColor: '#B8956F',
+                        backgroundColor: 'rgba(184, 149, 111, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#B8956F',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false, min: 40, grid: { color: 'rgba(232, 227, 222, 0.5)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const uniCtx = document.getElementById('universityChart').getContext('2d');
+            universityChart = new Chart(uniCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Wharton', 'Harvard', 'Stanford', 'MIT', 'Columbia', 'NYU', 'Chicago', 'Northwestern'],
+                    datasets: [{
+                        label: 'Placements',
+                        data: [18, 16, 14, 12, 10, 9, 8, 7],
+                        backgroundColor: 'rgba(184, 149, 111, 0.9)',
+                        borderRadius: 8,
+                        hoverBackgroundColor: 'rgba(139, 115, 85, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(232, 227, 222, 0.5)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateRecruiterMetrics(recruiter) {
+            const data = recruiterData[recruiter];
+            const chartData = [data.nameGen, data.outreach, data.candidateMgmt, data.close, data.clientOrig, data.clientMgmt];
+            
+            recruiterChart.data.datasets[0].data = chartData;
+            recruiterChart.update('active');
+
+            const tableBody = document.getElementById('metricsTable');
+            tableBody.innerHTML = `
+                <tr><td>Name Generation</td><td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${data.nameGen}</td></tr>
+                <tr><td>Outreach</td><td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${data.outreach}</td></tr>
+                <tr><td>Candidate Management</td><td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${data.candidateMgmt}</td></tr>
+                <tr><td>Close</td><td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${data.close}</td></tr>
+                <tr><td>Client Origination</td><td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${data.clientOrig}</td></tr>
+                <tr><td>Client Management</td><td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${data.clientMgmt}</td></tr>
+            `;
+        }
+
+        function updateElevationTrends(recruiter) {
+            const data = elevationData[recruiter];
+            const allData = elevationData.all;
+            
+            sourcingChart.data.datasets[0].data = [data.linkedin, data.campus, data.referral, data.jobBoards, data.other];
+            sourcingChart.update('active');
+
+            const uniLabels = Object.keys(data.universities);
+            const uniValues = Object.values(data.universities);
+            universityChart.data.labels = uniLabels;
+            universityChart.data.datasets[0].data = uniValues;
+            universityChart.update('active');
+
+            const comparisonBox = document.getElementById('recruiterComparison');
+            const comparisonContent = document.getElementById('comparisonContent');
+            
+            if (recruiter === 'all') {
+                comparisonBox.style.display = 'none';
+            } else {
+                comparisonBox.style.display = 'block';
+                const betterThanAvg = data.avgDays < allData.avgDays;
+                comparisonContent.innerHTML = `
+                    <div class="comparison-stat">
+                        <span>Your Avg Time to Placement:</span>
+                        <span><strong>${data.avgDays} days</strong> ${betterThanAvg ? '✓ Faster than average' : '⚠ Slower than average'}</span>
+                    </div>
+                    <div class="comparison-stat">
+                        <span>Team Average:</span>
+                        <span><strong>${allData.avgDays} days</strong></span>
+                    </div>
+                    <div class="comparison-stat">
+                        <span>Your Top Channel:</span>
+                        <span><strong>LinkedIn (${data.linkedin} placements)</strong></span>
+                    </div>
+                    <div class="comparison-stat">
+                        <span>Your Top University:</span>
+                        <span><strong>${Object.keys(data.universities)[0]} (${Object.values(data.universities)[0]} placements)</strong></span>
+                    </div>
+                `;
+            }
+        }
+
+        function updateLinkedInFeed(filter) {
+            const container = document.getElementById('linkedinUpdates');
+            const filtered = filter === 'all' ? linkedinUpdates : linkedinUpdates.filter(u => u.recruiter === filter);
+            
+            container.innerHTML = filtered.map(update => `
+                <div class="linkedin-update">
+                    <div class="linkedin-icon">in</div>
+                    <div class="linkedin-content">
+                        <div class="linkedin-name">${update.name}</div>
+                        <div class="linkedin-action">${update.action}</div>
+                        <div class="linkedin-time">${update.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Event listeners
+        document.getElementById('clientFilter').addEventListener('change', (e) => {
+            updateClientTable(e.target.value);
+        });
+
+        document.getElementById('recruiterSelect').addEventListener('change', (e) => {
+            updateRecruiterMetrics(e.target.value);
+        });
+
+        document.getElementById('elevationSelect').addEventListener('change', (e) => {
+            updateElevationTrends(e.target.value);
+        });
+
+        document.getElementById('linkedinFilter').addEventListener('change', (e) => {
+            updateLinkedInFeed(e.target.value);
+        });
+
+        window.addEventListener('load', () => {
+            updateClientTable('joe');
+            initRecruiterChart();
+            initElevationCharts();
+            updateLinkedInFeed('all');
+        });
+    </script>
+</body>
+</html>
