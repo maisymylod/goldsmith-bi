@@ -6,11 +6,11 @@ Premium BI dashboard for executive recruiting analytics with ML-powered insights
 
 Visit: [https://maisymylod.github.io/goldsmith-bi/](https://maisymylod.github.io/goldsmith-bi/)
 
-## ✨ Key Features
+## Key Features
 
 ### Main Dashboard (index.html)
 
-#### **Interactive Resume Previews** 📄✨
+#### **Interactive Resume Previews**
 - **Hover over any candidate name** to see instant resume popup
 - Biography summary
 - Complete work history with dates
@@ -135,7 +135,7 @@ python -m http.server 8000
 # Visit http://localhost:8000
 ```
 
-## 🆕 Recent Updates (Jan 29, 2026)
+## Recent Updates (Jan 29, 2026)
 
 - ✅ Resume preview popups on candidate name hover
 - ✅ Biography data for all candidates with employment history
