@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile - Sterling Montgomery | Goldsmith & Co</title>
+    <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #B8956F;
+            --gold-dark: #8B7355;
+            --gold-light: #D4BF9D;
+            --charcoal: #1A1A1A;
+            --bg: #FDFCFB;
+            --bg-alt: #F8F6F4;
+            --card: #FFFFFF;
+            --text: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --text-tertiary: #9B9B9B;
+            --border: #E8E3DE;
+            --active-green: #10b981;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Instrument Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-family: 'Eczar', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .back-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 64px 48px;
+        }
+
+        .profile-header {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 32px;
+        }
+
+        .profile-info h1 {
+            font-family: 'Eczar', serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--charcoal);
+        }
+
+        .profile-current {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--active-green), #059669);
+            color: white;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .search-info {
+            text-align: right;
+        }
+
+        .search-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .search-name {
+            font-family: 'Eczar', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold-dark);
+        }
+
+        .search-stage {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-family: 'Eczar', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--charcoal);
+        }
+
+        .section-content p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .employment-list {
+            list-style: none;
+        }
+
+        .employment-item {
+            padding: 20px;
+            background: var(--bg-alt);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .employment-company {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--charcoal);
+            margin-bottom: 6px;
+        }
+
+        .employment-role {
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .employment-dates {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .doc-preview {
+            background: var(--bg-alt);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .doc-preview:hover {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-md);
+        }
+
+        .doc-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .doc-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .doc-info {
+            flex: 1;
+        }
+
+        .doc-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .doc-meta {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Instrument Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .pdf-preview-container {
+            width: 100%;
+            height: 400px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pdf-placeholder {
+            text-align: center;
+            color: var(--text-tertiary);
+        }
+
+        .pdf-placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-alt);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .team-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .team-info {
+            flex: 1;
+        }
+
+        .team-name {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .team-role {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="brand">Goldsmith & Co</div>
+        <a href="index.html" class="back-link">← Back to Dashboard</a>
+    </header>
+
+    <main class="main">
+        <div class="profile-header">
+            <div class="profile-top">
+                <div class="profile-info">
+                    <h1>Sterling Archibald Montgomery</h1>
+                    <div class="profile-current">Managing Director at Whimsy Financial</div>
+                    <span class="status-badge">Active Candidate</span>
+                </div>
+                <div class="search-info">
+                    <div class="search-label">Current Search</div>
+                    <div class="search-name">Acme Corp - VP of Magic Beans</div>
+                    <div class="search-stage">Stage: Client Interview Round</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div>
+                <!-- Biography -->
+                <div class="section">
+                    <h2 class="section-title">Biography</h2>
+                    <div class="section-content">
+                        <p>Sterling is a seasoned finance executive with over 15 years of experience in investment banking and private equity. Known for innovative deal structuring and client relationship management, he has successfully closed over $5B in transactions across technology, healthcare, and consumer sectors.</p>
+                        <br>
+                        <p>His leadership style emphasizes mentorship and team development, having built and led high-performing teams of 20+ professionals. Sterling holds an MBA from Wharton and a BA in Economics from Princeton.</p>
+                        <br>
+                        <p>Outside of work, Sterling is an avid golfer and serves on the board of two non-profit organizations focused on financial literacy education.</p>
+                    </div>
+                </div>
+
+                <!-- Previous Employment -->
+                <div class="section">
+                    <h2 class="section-title">Previous Employment</h2>
+                    <ul class="employment-list">
+                        <li class="employment-item">
+                            <div class="employment-company">Whimsy Financial</div>
+                            <div class="employment-role">Managing Director, Investment Banking</div>
+                            <div class="employment-dates">2019 - Present</div>
+                        </li>
+                        <li class="employment-item">
+                            <div class="employment-company">Enchanted Capital</div>
+                            <div class="employment-role">Vice President, M&A Advisory</div>
+                            <div class="employment-dates">2015 - 2019</div>
+                        </li>
+                        <li class="employment-item">
+                            <div class="employment-company">Rainbow Investments</div>
+                            <div class="employment-role">Associate, Corporate Finance</div>
+                            <div class="employment-dates">2012 - 2015</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Client Team Documents -->
+                <div class="section">
+                    <h2 class="section-title">Client Team Documents</h2>
+                    
+                    <div class="doc-preview" onclick="previewDoc('jd')">
+                        <div class="doc-header">
+                            <div class="doc-icon">JD</div>
+                            <div class="doc-info">
+                                <div class="doc-name">Job Description</div>
+                                <div class="doc-meta">245 KB • PDF Document • Updated Jan 15, 2026</div>
+                            </div>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); previewDoc('jd')">Preview</button>
+                            <button class="btn btn-secondary" onclick="event.stopPropagation(); alert('Downloading...')">Download</button>
+                        </div>
+                        <div id="jd-preview" class="pdf-preview-container" style="display: none;">
+                            <div class="pdf-placeholder">
+                                <div class="pdf-placeholder-icon">📄</div>
+                                <div>Job Description Preview</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Full PDF rendering would appear here</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="doc-preview" onclick="previewDoc('onepager')">
+                        <div class="doc-header">
+                            <div class="doc-icon">1P</div>
+                            <div class="doc-info">
+                                <div class="doc-name">One-Pager</div>
+                                <div class="doc-meta">180 KB • PDF Document • Updated Jan 12, 2026</div>
+                            </div>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); previewDoc('onepager')">Preview</button>
+                            <button class="btn btn-secondary" onclick="event.stopPropagation(); alert('Downloading...')">Download</button>
+                        </div>
+                        <div id="onepager-preview" class="pdf-preview-container" style="display: none;">
+                            <div class="pdf-placeholder">
+                                <div class="pdf-placeholder-icon">📋</div>
+                                <div>One-Pager Preview</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Full PDF rendering would appear here</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="doc-preview" onclick="previewDoc('assessment')">
+                        <div class="doc-header">
+                            <div class="doc-icon">AM</div>
+                            <div class="doc-info">
+                                <div class="doc-name">Assessment Matrix</div>
+                                <div class="doc-meta">320 KB • PDF Document • Updated Jan 18, 2026</div>
+                            </div>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); previewDoc('assessment')">Preview</button>
+                            <button class="btn btn-secondary" onclick="event.stopPropagation(); alert('Downloading...')">Download</button>
+                        </div>
+                        <div id="assessment-preview" class="pdf-preview-container" style="display: none;">
+                            <div class="pdf-placeholder">
+                                <div class="pdf-placeholder-icon">📊</div>
+                                <div>Assessment Matrix Preview</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Full PDF rendering would appear here</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="doc-preview">
+                        <div class="doc-header">
+                            <div class="doc-icon" style="background: linear-gradient(135deg, #1a1a1a, #2c2c2c);">📜</div>
+                            <div class="doc-info">
+                                <div class="doc-name">Client Contract</div>
+                                <div class="doc-meta">1.2 MB • PDF Document • Download Only</div>
+                            </div>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="btn btn-secondary" onclick="alert('Downloading contract...')">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- Resume -->
+                <div class="section">
+                    <h2 class="section-title">Resume</h2>
+                    <div class="doc-preview" onclick="previewDoc('resume')">
+                        <div class="doc-header">
+                            <div class="doc-icon">📄</div>
+                            <div class="doc-info">
+                                <div class="doc-name">sterling_montgomery_resume.pdf</div>
+                                <div class="doc-meta">485 KB • PDF Document</div>
+                            </div>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); previewDoc('resume')">Preview</button>
+                            <button class="btn btn-secondary" onclick="event.stopPropagation(); alert('Downloading...')">Download</button>
+                        </div>
+                        <div id="resume-preview" class="pdf-preview-container" style="display: none;">
+                            <div class="pdf-placeholder">
+                                <div class="pdf-placeholder-icon">📄</div>
+                                <div>Resume Preview</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Full PDF rendering would appear here</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- G&Co Team -->
+                <div class="section">
+                    <h2 class="section-title">G&Co Team</h2>
+                    <div class="team-member">
+                        <div class="team-avatar">JG</div>
+                        <div class="team-info">
+                            <div class="team-name">Joe Goldsmith</div>
+                            <div class="team-role">Lead Recruiter</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">SC</div>
+                        <div class="team-info">
+                            <div class="team-name">Sarah Chen</div>
+                            <div class="team-role">Research Associate</div>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">MW</div>
+                        <div class="team-info">
+                            <div class="team-name">Marcus Webb</div>
+                            <div class="team-role">Partner</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="section">
+                    <h2 class="section-title">Recent Activity</h2>
+                    <div class="section-content">
+                        <p style="margin-bottom: 12px;"><strong>Jan 22, 2026:</strong> Follow-up call with client team</p>
+                        <p style="margin-bottom: 12px;"><strong>Jan 15, 2026:</strong> Client introduction meeting</p>
+                        <p style="margin-bottom: 12px;"><strong>Dec 8, 2025:</strong> Initial phone screen with G&Co</p>
+                        <p><strong>Nov 28, 2025:</strong> Candidate identified and sourced</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function previewDoc(docType) {
+            // Hide all previews
+            document.querySelectorAll('.pdf-preview-container').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show selected preview
+            const preview = document.getElementById(docType + '-preview');
+            if (preview) {
+                preview.style.display = preview.style.display === 'none' ? 'flex' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>
