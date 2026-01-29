@@ -2,20 +2,9 @@
 
 Premium BI dashboard for executive recruiting analytics with ML-powered insights.
 
-## 🚀 Live Demo
+## Live Demo
 
 Visit: [https://maisymylod.github.io/goldsmith-bi/](https://maisymylod.github.io/goldsmith-bi/)
-
-## 📁 Files to Upload
-
-Upload these **3 files** to your GitHub repository:
-
-```
-goldsmith-bi/
-├── index.html              # Main analytics dashboard (82KB)
-├── candidate-profile.html  # Detailed candidate profile (21KB)
-└── README.md              # Documentation (this file)
-```
 
 ## ✨ Key Features
 
@@ -69,7 +58,7 @@ Detailed view including:
   - Client Contract (download only)
 - Recent activity timeline
 
-## 🎨 Design System
+## Design System
 
 **Typography:**
 - Eczar (serif) - Headings and emphasis
@@ -88,7 +77,7 @@ Detailed view including:
 - White-glove aesthetic
 - Responsive design
 
-## 📊 Sample Data
+## Sample Data
 
 All data is **completely fictional** for demonstration:
 
@@ -157,7 +146,7 @@ python -m http.server 8000
 - ✅ Multiple candidates per company (1-2 each)
 - ✅ Complete candidate work history timelines
 
-## 🎯 Usage Tips
+## Usage Tips
 
 1. **Hover over candidate names** in the table to see resume previews
 2. **Click Current/Former tabs** to switch between active and completed assignments
